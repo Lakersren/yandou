@@ -78,6 +78,7 @@ POSTGRES_PASSWORD=服务器数据库强密码
 COOKIE_SECURE=0
 SECURE_SSL_REDIRECT=0
 WEB_PORT=8000
+PIP_INDEX_URL=https://mirrors.cloud.tencent.com/pypi/simple
 ```
 
 数据库备份不依赖原来的 PostgreSQL 密码，所以服务器可以设置新密码。当前账号已经包含在数据库中，`ADMIN_PASSWORD` 仅在数据库里不存在管理员时使用。

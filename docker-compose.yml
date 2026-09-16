@@ -33,6 +33,7 @@ services:
         NODE_IMAGE: ${NODE_IMAGE:-docker.m.daocloud.io/library/node:22-alpine}
         PYTHON_IMAGE: ${PYTHON_IMAGE:-docker.m.daocloud.io/library/python:3.13-slim}
         DEBIAN_MIRROR: ${DEBIAN_MIRROR:-https://mirrors.cloud.tencent.com}
+        PIP_INDEX_URL: ${PIP_INDEX_URL:-https://mirrors.cloud.tencent.com/pypi/simple}
     image: ${APP_IMAGE:-restock:latest}
     restart: unless-stopped
     env_file: ${ENV_FILE:-.env}
