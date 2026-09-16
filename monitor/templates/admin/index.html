@@ -1,0 +1,86 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block bodyclass %}{{ block.super }} dashboard operations-dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+{% block content_title %}{% endblock %}
+
+{% block content %}
+<main id="content-main" class="dashboard-main">
+  <header class="dashboard-heading">
+    <div>
+      <h1>商品监控</h1>
+      <p>{{ monitor_stats.product_count }} 个商品正在监控</p>
+    </div>
+  </header>
+
+  <section class="quick-add" id="quick-add">
+    <form method="post" action="{% url 'admin:monitor_product_quick_add' %}">
+      {% csrf_token %}
+      <label for="quick-product-url">商品 URL</label>
+      <div class="quick-add-row">
+        <input id="quick-product-url" name="url" type="url" required autocomplete="off" placeholder="粘贴商品页面 URL">
+        <button type="submit" class="button">开始监控</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="dashboard-section">
+    <div class="section-heading"><h2>正在监控</h2><a href="{% url 'admin:monitor_product_changelist' %}">管理全部</a></div>
+    <div class="table-shell">
+      <table class="dashboard-table">
+        <thead><tr><th>商品</th><th>商城</th><th>库存</th><th>最近检查</th><th></th></tr></thead>
+        <tbody>
+          {% for product in monitor_products %}
+          <tr>
+            <td class="product-name"><a href="{{ product.url }}" target="_blank" rel="noopener">{{ product.name|default:"等待识别" }}</a></td>
+            <td>{{ product.site.name }}</td>
+            <td><span class="status-badge {% if product.stock_status == 'in_stock' %}status-in{% elif product.stock_status == 'out_of_stock' %}status-out{% else %}status-warning{% endif %}">{{ product.stock_status_label }}</span></td>
+            <td>{% if product.last_checked_at %}{{ product.last_checked_at|timesince }}前{% else %}等待检查{% endif %}</td>
+            <td class="row-action"><a href="{% url 'admin:monitor_product_change' product.id %}">管理</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="empty-state">粘贴一个商品 URL 开始监控</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="dashboard-columns compact-columns">
+    <section class="dashboard-section">
+      <div class="section-heading"><h2>最近补货</h2><a href="{% url 'admin:monitor_stockevent_changelist' %}">查看全部</a></div>
+      <div class="event-list">
+        {% for event in monitor_recent_events %}
+        <a href="{% url 'admin:monitor_product_change' event.variant.product_id %}" class="event-row">
+          <span><strong>{{ event.variant.product.name }}</strong><small>{{ event.variant.product.site.name }} · {{ event.variant.name }}</small></span>
+          <time>{{ event.created_at|date:"m-d H:i" }}</time>
+        </a>
+        {% empty %}<div class="empty-state compact">暂无补货记录</div>{% endfor %}
+      </div>
+    </section>
+
+    {% if monitor_recent_failures %}
+    <section class="dashboard-section">
+      <div class="section-heading"><h2>最近异常</h2><a href="{% url 'admin:monitor_crawlfailure_changelist' %}">异常中心</a></div>
+      <div class="failure-list">
+        {% for failure in monitor_recent_failures %}
+        <a href="{% url 'admin:monitor_crawlfailure_change' failure.id %}" class="failure-row">
+          <span><strong>{{ failure.product.name|default:failure.product.site.name }}</strong><small>{{ failure.message|truncatechars:56 }}</small></span>
+          <time>{{ failure.occurred_at|date:"m-d H:i" }}</time>
+        </a>
+        {% empty %}
+        <div class="empty-state compact">暂无异常</div>
+        {% endfor %}
+      </div>
+    </section>
+    {% else %}
+    <section class="dashboard-section quiet-status">
+      <span class="state-dot"></span><strong>运行正常</strong><small>暂无检查异常</small>
+    </section>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}
+
+{% block sidebar %}{% endblock %}

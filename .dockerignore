@@ -1,0 +1,13 @@
+.git
+.venv
+__pycache__
+*.pyc
+db.sqlite3
+.env
+deploy/backups
+staticfiles
+.pytest_cache
+console/node_modules
+console/.vite
+console/test-results
+monitor/static/console

@@ -1,0 +1,51 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div id="content-main">
+  <form method="post" novalidate class="url-monitor-form">
+    {% csrf_token %}
+    <fieldset class="setup-panel">
+      <div class="field-block field-wide">
+        {{ form.url.errors }}
+        {{ form.url.label_tag }}
+        {{ form.url }}
+      </div>
+      <div class="field-block interval-field">
+        {{ form.interval_minutes.errors }}
+        {{ form.interval_minutes.label_tag }}
+        {{ form.interval_minutes }}
+        <small>留空则使用商城默认频率</small>
+      </div>
+      <div class="field-block">
+        <label>推送范围</label>
+        <div class="check-options">
+          <label>{{ form.notify_site_group }} <span>对应站点群</span></label>
+          <label>{{ form.notify_all_group }} <span>综合群</span></label>
+        </div>
+      </div>
+      <div class="field-block field-wide">
+        {{ form.notes.errors }}
+        {{ form.notes.label_tag }}
+        {{ form.notes }}
+      </div>
+    </fieldset>
+    <div class="form-action-bar"><input type="submit" name="preview" value="解析预览" class="default"></div>
+    {% if observation %}
+      <section class="preview-result">
+        <div class="section-heading"><h2>解析结果</h2><span class="status-badge status-in">解析成功</span></div>
+        <div class="table-shell"><table class="dashboard-table product-summary">
+          <tr><th>商品名称</th><td>{{ observation.name }}</td></tr>
+          <tr><th>最终地址</th><td>{{ observation.canonical_url }}</td></tr>
+        </table></div>
+        <div class="section-heading variants-heading"><h2>规格与库存</h2></div>
+        <div class="table-shell"><table class="dashboard-table">
+          <thead><tr><th>规格</th><th>库存</th><th>价格</th><th>判断依据</th></tr></thead>
+          <tbody>{% for item in observation.variants %}
+          <tr><td>{{ item.name }}</td><td><span class="status-badge {% if item.status == 'in_stock' %}status-in{% elif item.status == 'out_of_stock' %}status-out{% else %}status-warning{% endif %}">{{ item.status_label }}</span></td><td>{{ item.currency }} {{ item.price|default:"-" }}</td><td>{{ item.hint }}</td></tr>
+          {% endfor %}</tbody>
+        </table></div>
+      </section>
+      <div class="form-action-bar final-action"><input type="submit" name="save" value="确认并开启监控" class="default"></div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}

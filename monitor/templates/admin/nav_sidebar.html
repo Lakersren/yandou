@@ -1,0 +1,9 @@
+{% load i18n %}
+<button class="sticky toggle-nav-sidebar" id="toggle-nav-sidebar" aria-label="{% translate 'Toggle navigation' %}"></button>
+<nav class="sticky simple-nav" id="nav-sidebar" aria-label="侧边栏">
+  <div class="simple-nav-title">补货监控</div>
+  <a href="{% url 'admin:monitor_product_changelist' %}" class="{% if '/monitor/product/' in request.path %}current{% endif %}">监控商品</a>
+  <a href="{% url 'admin:monitor_stockevent_changelist' %}" class="{% if '/monitor/stockevent/' in request.path %}current{% endif %}">补货记录</a>
+  <a href="{% url 'admin:monitor_crawlfailure_changelist' %}" class="{% if '/monitor/crawlfailure/' in request.path %}current{% endif %}">异常记录</a>
+  <a href="{% url 'admin:monitor_dingtalkchannel_changelist' %}" class="{% if '/monitor/dingtalkchannel/' in request.path %}current{% endif %}">钉钉群</a>
+</nav>

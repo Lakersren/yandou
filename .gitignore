@@ -1,0 +1,16 @@
+.env
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+.e2e.sqlite3
+staticfiles/
+.pytest_cache/
+celerybeat-schedule*
+deploy/backups/
+.superpowers/
+console/node_modules/
+console/coverage/
+console/test-results/
+monitor/static/console/

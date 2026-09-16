@@ -1,0 +1,104 @@
+services:
+  db:
+    image: ${POSTGRES_IMAGE:-docker.m.daocloud.io/library/postgres:17-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-restock}
+      POSTGRES_USER: ${POSTGRES_USER:-restock}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?请在 .env 设置 POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-restock} -d ${POSTGRES_DB:-restock}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: ${REDIS_IMAGE:-docker.m.daocloud.io/library/redis:7-alpine}
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  web:
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-docker.m.daocloud.io/library/node:22-alpine}
+        PYTHON_IMAGE: ${PYTHON_IMAGE:-docker.m.daocloud.io/library/python:3.13-slim}
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR:-https://mirrors.cloud.tencent.com}
+    image: ${APP_IMAGE:-restock:latest}
+    restart: unless-stopped
+    env_file: ${ENV_FILE:-.env}
+    environment:
+      RESTOCK_BROWSER_PROFILE_DIR: /browser-profile
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/chromium
+    volumes:
+      - browser_web_data:/browser-profile
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  worker:
+    image: ${APP_IMAGE:-restock:latest}
+    restart: unless-stopped
+    command: ["worker"]
+    env_file: ${ENV_FILE:-.env}
+    environment:
+      RESTOCK_BROWSER_PROFILE_DIR: /browser-profile
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/chromium
+      WORKER_QUEUES: celery
+      WORKER_PREFETCH_MULTIPLIER: 1
+    volumes:
+      - browser_worker_data:/browser-profile
+    depends_on:
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  worker_bright_data:
+    image: ${APP_IMAGE:-restock:latest}
+    restart: unless-stopped
+    command: ["worker"]
+    env_file: ${ENV_FILE:-.env}
+    environment:
+      WORKER_QUEUES: bright_data
+      WORKER_PREFETCH_MULTIPLIER: 1
+    depends_on:
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  beat:
+    image: ${APP_IMAGE:-restock:latest}
+    restart: unless-stopped
+    command: ["beat"]
+    env_file: ${ENV_FILE:-.env}
+    depends_on:
+      web:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  browser_web_data:
+  browser_worker_data:

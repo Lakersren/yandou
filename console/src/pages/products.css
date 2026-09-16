@@ -1,0 +1,3 @@
+.products-page__row--disabled > .ant-table-cell {
+  background-color: #fafafa;
+}

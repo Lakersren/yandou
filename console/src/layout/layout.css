@@ -1,0 +1,63 @@
+.console-layout,
+html,
+body,
+#root {
+  min-width: 0;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.console-layout,
+.console-layout .ant-pro-layout,
+.console-layout .ant-pro-layout-container {
+  min-height: 100vh;
+}
+
+.console-layout .ant-pro-layout-content {
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.console-layout__content {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 20px 24px 28px;
+}
+
+.console-layout__header-actions {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  min-width: 0;
+}
+
+.console-layout__user {
+  color: rgba(0, 0, 0, 0.88);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .console-layout__content {
+    padding: 16px 12px 24px;
+  }
+
+  .console-layout__header-actions {
+    gap: 12px;
+  }
+
+  .console-layout__header-actions .ant-badge-status-text {
+    display: none;
+  }
+
+  .console-layout__user {
+    max-width: 88px;
+  }
+}

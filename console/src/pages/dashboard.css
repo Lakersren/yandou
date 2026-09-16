@@ -1,0 +1,144 @@
+.dashboard-page {
+  min-width: 0;
+}
+
+.dashboard-state {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 240px;
+}
+
+.dashboard-statistic {
+  height: 100%;
+}
+
+.dashboard-statistic__value {
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-top: 8px;
+}
+
+.dashboard-band {
+  min-width: 0;
+  padding-top: 24px;
+}
+
+.dashboard-band .ant-typography {
+  margin: 0 0 12px;
+}
+
+.dashboard-section-heading {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  min-height: 36px;
+}
+
+.dashboard-section-heading .ant-btn {
+  padding-inline: 0;
+}
+
+.dashboard-regions {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.dashboard-region {
+  border-color: #e5e7eb;
+  min-width: 0;
+}
+
+.dashboard-region:focus-visible {
+  outline: 2px solid #1677ff;
+  outline-offset: 2px;
+}
+
+.dashboard-region--selected {
+  border-color: #1677ff;
+  box-shadow: 0 0 0 1px #1677ff;
+}
+
+.dashboard-region__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.dashboard-region__header .ant-tag {
+  margin-inline-end: 0;
+}
+
+.dashboard-region__metrics {
+  display: grid;
+  gap: 12px 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.dashboard-region__metrics div {
+  display: grid;
+  gap: 2px;
+}
+
+.dashboard-region__metrics strong {
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.dashboard-region__metrics span,
+.dashboard-region__checked {
+  color: rgba(0, 0, 0, 0.45);
+  font-size: 12px;
+}
+
+.dashboard-region__checked {
+  display: block;
+  margin-top: 16px !important;
+}
+
+.dashboard-band .ant-table-wrapper {
+  overflow-x: auto;
+}
+
+.dashboard-product-name {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dashboard-product-site {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1199px) {
+  .dashboard-regions {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .dashboard-regions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 575px) {
+  .dashboard-band {
+    padding-top: 20px;
+  }
+
+  .dashboard-statistic__value {
+    font-size: 26px;
+  }
+
+  .dashboard-regions {
+    grid-template-columns: 1fr;
+  }
+}
