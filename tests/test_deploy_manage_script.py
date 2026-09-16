@@ -112,6 +112,8 @@ class DeployManageScriptTests(SimpleTestCase):
                 prefix + "up -d db redis",
                 prefix + "exec -T db sh -c until pg_isready -U \"$POSTGRES_USER\" "
                 "-d \"$POSTGRES_DB\"; do sleep 1; done",
+                prefix + "exec -T db sh -c until pg_isready -U \"$POSTGRES_USER\" "
+                "-d \"$POSTGRES_DB\"; do sleep 1; done",
                 prefix + "exec -T db sh -c pg_restore --clean --if-exists --no-owner "
                 '--no-acl --exit-on-error -U "$POSTGRES_USER" -d "$POSTGRES_DB"',
                 prefix + "up -d --build --remove-orphans",

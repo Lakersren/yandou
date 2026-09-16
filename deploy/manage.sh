@@ -50,6 +50,11 @@ case "${1:-}" in
     compose up -d db redis
     compose exec -T db sh -c \
       'until pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 1; done'
+    # The official image briefly accepts connections through a temporary server
+    # during first-time initialization, then restarts PostgreSQL.
+    sleep 3
+    compose exec -T db sh -c \
+      'until pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB"; do sleep 1; done'
     compose exec -T db sh -c \
       'pg_restore --clean --if-exists --no-owner --no-acl --exit-on-error -U "$POSTGRES_USER" -d "$POSTGRES_DB"' \
       < "$BACKUP_FILE"
