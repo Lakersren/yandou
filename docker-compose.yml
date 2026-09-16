@@ -50,7 +50,7 @@ services:
     ports:
       - "${WEB_PORT:-8000}:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:8000/healthz"]
       interval: 10s
       timeout: 5s
       retries: 20
